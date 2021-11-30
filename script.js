@@ -3,7 +3,8 @@
     });
 
     $("#text2").validator({
-        type: "text"
+        type: "text",
+        min: "min",
     });
 
     $("#number").validator({
@@ -26,6 +27,11 @@
 
     $("#password").validator({
         type: "password",
+        min: 6,
+        max: 12,
+        caps: true ,
+        symbols: true,
+        numbers: true
     })
 
     $("#password_match").validator({

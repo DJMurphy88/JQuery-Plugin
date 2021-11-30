@@ -4,11 +4,11 @@
         let settings = $.extend({
             type: null,
             min: 1,
-            max: "max",
-            neg: true,
-            caps: true,
-            symbols: true,
-            numbers: true,
+            max: null,
+            negative: true,
+            cap: true,
+            symbol: true,
+            number: true,
             phonePattern: /^[+]*[(]{0,1}[0-9]{1,3}[)]{0,1}[-\s\./0-9]*$/g,
             emailPattern: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}\b/,
             parentField: null,
@@ -29,14 +29,14 @@
                         $(id).next().text("This field is required.");
                         isValid = false;
                     }    
-                    else if (settings.max != "max") {
+                    else if (settings.max != null) {
                         if (text.length > settings.max) {
-                            $(id).next().text(`This field must have no more than ${settings.max} characters.`);
+                            $(id).next().text(`Must have no more than ${settings.max} characters.`);
                             isValid = false;
                         }
                     }
                     else if (text.length < settings.min) {
-                        $(id).next().text(`This field must have at least ${settings.min} characters.`);
+                        $(id).next().text(`Must have at least ${settings.min} characters.`);
                         isValid = false;
                     }
                     else {
@@ -56,17 +56,17 @@
                         $(id).next().text("Must be numeric.");
                         isValid = false;
                     }
-                    else if (settings.max != "max") {
+                    else if (settings.max != null) {
                         if (number.length > settings.max) {
-                            $(id).next().text(`This field must have no more than ${settings.max} characters.`);
+                            $(id).next().text(`Must have no more than ${settings.max} characters.`);
                             isValid = false;
                         }
                     }
                     else if (number.length < settings.min) {
-                        $(id).next().text(`This field must have at least ${settings.max} characters.`);
+                        $(id).next().text(`TMust have at least ${settings.max} characters.`);
                         isValid = false;
                     }
-                    else if (settings.neg == false && number < 0) {
+                    else if (settings.negative == false && number < 0) {
                         $(id).next().text(`Can't be a negative number.`);
                         isValid = false;
                     }
@@ -92,7 +92,7 @@
                     $(id).val(phone);
                     }
                 // Email validator 
-                else if (settings.type == "email") {    
+                else if (settings.type == "email") {
                     const email = $(id).val().trim();
                 
                     if (email == "") {
@@ -109,20 +109,32 @@
                     $(id).val(email);
                 }
                 // Password validator
-                else if (settings.type == "password") {            
+                else if (settings.type == "password") {
                     const password = $(id).val().trim();                        
                     if (password == "") {
                         $(id).next().text("This field is required.");
                         isValid = false;
                     }
-                    else if (settings.max != "max") {
+                    else if (settings.max != null) {
                         if (text.length > settings.max) {
-                            $(id).next().text(`This field must have no more than ${settings.max} characters.`);
+                            $(id).next().text(`Must have no more than ${settings.max} characters.`);
                             isValid = false;
                         }
                     }
                     else if (text.length < settings.min) {
-                        $(id).next().text(`This field must have at least ${settings.min} characters.`);
+                        $(id).next().text(`Must have at least ${settings.min} characters.`);
+                        isValid = false;
+                    }
+                    else if (settings.cap && !(/[A-Z]+/).test(password)) {
+                        $(id).next().text("Must contain at least one capital letter.");
+                        isValid = false;
+                    }
+                    else if (settings.symbol && !(/\W+/).test(password)) {
+                        $(id).next().text("Must contain at least one symbol.");
+                        isValid = false;
+                    }
+                    else if (settings.number && !(/[0-9]+/).test(password)) {
+                        $(id).next().text("Must contain at least one number.");
                         isValid = false;
                     }
                     else {
@@ -130,7 +142,7 @@
                     }
                     $(id).val(password);
                 }
-
+                // Match validator
                 else if (settings.type == "match") {
                     const childField = $(id).val().trim();
                     const parentField = $(settings.parentField).val().trim();
@@ -146,8 +158,7 @@
                         $(id).next().text(""); 
                     }
                     $(id).val(childField)
-                }
-    
+                }    
                 if (isValid == false) {
                     evt.preventDefault();
                 }
